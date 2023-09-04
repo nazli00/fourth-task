@@ -1,0 +1,231 @@
+using System;
+
+class Pet
+{
+    internal string Nickname { get; set; }
+    internal int Age { get; set; }
+    internal string Gender { get; set; }
+    internal int Energy { get; set; }
+    internal double Price { get; set; }
+    internal int MealQuantity { get; set; }
+
+    public void Eat()
+    {
+        Energy += MealQuantity;
+    }
+
+    public void Sleep()
+    {
+        Energy = 100;
+    }
+
+    public void Play()
+    {
+        Energy -= 10;
+    }
+
+    public override string ToString()
+    {
+        return $"Nickname: {Nickname},\nAge: {Age},\nGender: {Gender},\nEnergy: {Energy},\nPrice: ${Price}";
+    }
+}
+
+class PetShop
+{
+    internal Pet[] Cats { get; set; }
+    internal Pet[] Dogs { get; set; }
+    internal Pet[] Birds { get; set; }
+    internal Pet[] Fishes { get; set; }
+
+    public int CatCount { get; set; }
+    public int DogCount { get; set; }
+    public int BirdCount { get; set; }
+    public int FishCount { get; set; }
+
+    public PetShop(int capacity)
+    {
+        Cats = new Pet[capacity];
+        Dogs = new Pet[capacity];
+        Birds = new Pet[capacity];
+        Fishes = new Pet[capacity];
+    }
+
+    public void AddPet(Pet pet, string species)
+    {
+        Pet[]? pets = null;
+        int count = 0;
+
+        if (species == "Cat")
+        {
+            pets = Cats;
+            count = CatCount;
+        }
+        else if (species == "Dog")
+        {
+            pets = Dogs;
+            count = DogCount;
+        }
+        else if (species == "Bird")
+        {
+            pets = Birds;
+            count = BirdCount;
+        }
+        else if (species == "Fish")
+        {
+            pets = Fishes;
+            count = FishCount;
+        }
+        else
+        {
+            Console.WriteLine("Invalid species!");
+            return;
+        }
+
+        if (count < pets.Length)
+        {
+            pets[count] = pet;
+            count++;
+            if (species == "Cat") CatCount = count;
+            else if (species == "Dog") DogCount = count;
+            else if (species == "Bird") BirdCount = count;
+            else if (species == "Fish") FishCount = count;
+        }
+        else
+        {
+            Console.WriteLine($"No more space for {species}!");
+        }
+    }
+
+    public void RemoveByNickname(string nickname, string species)
+    {
+        Pet[]? pets = null;
+        int count = 0;
+
+        if (species == "Cat")
+        {
+            pets = Cats;
+            count = CatCount;
+        }
+        else if (species == "Dog")
+        {
+            pets = Dogs;
+            count = DogCount;
+        }
+        else if (species == "Bird")
+        {
+            pets = Birds;
+            count = BirdCount;
+        }
+        else if (species == "Fish")
+        {
+            pets = Fishes;
+            count = FishCount;
+        }
+        else
+        {
+            Console.WriteLine("Invalid species!");
+            return;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            if (pets[i]?.Nickname == nickname)
+            {
+                for (int j = i; j < count - 1; j++)
+                {
+                    pets[j] = pets[j + 1];
+                }
+                pets[count - 1] = null;
+                count--;
+                Console.WriteLine($"Removed {species} with nickname {nickname}");
+                if (species == "Cat") CatCount = count;
+                else if (species == "Dog") DogCount = count;
+                else if (species == "Bird") BirdCount = count;
+                else if (species == "Fish") FishCount = count;
+                return;
+            }
+        }
+
+        Console.WriteLine($"No {species} found with nickname {nickname}");
+    }
+
+    public double CalculateTotalPrice()
+    {
+        double totalPrice = 0.0;
+
+        foreach (var cat in Cats)
+        {
+            if (cat != null)
+            {
+                totalPrice += cat.Price;
+            }
+        }
+
+        foreach (var dog in Dogs)
+        {
+            if (dog != null)
+            {
+                totalPrice += dog.Price;
+            }
+        }
+
+        foreach (var bird in Birds)
+        {
+            if (bird != null)
+            {
+                totalPrice += bird.Price;
+            }
+        }
+
+        foreach (var fish in Fishes)
+        {
+            if (fish != null)
+            {
+                totalPrice += fish.Price;
+            }
+        }
+
+        return totalPrice;
+    }
+
+    public void DisplayPets()
+    {
+        DisplaySpecies("Cats", Cats);
+        DisplaySpecies("Dogs", Dogs);
+        DisplaySpecies("Birds", Birds);
+        DisplaySpecies("Fishes", Fishes);
+    }
+
+    private void DisplaySpecies(string species, Pet[] pets)
+    {
+        Console.WriteLine($"{species}:");
+
+        foreach (var pet in pets)
+        {
+            if (pet != null)
+            {
+                Console.WriteLine(pet);
+            }
+        }
+
+        Console.WriteLine();
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        PetShop petShop = new PetShop(10);
+
+
+        petShop.AddPet(new Pet { Nickname = "Whiskers", Age = 2, Gender = "Male", Energy = 80, Price = 50.0 }, "Cat");
+        petShop.AddPet(new Pet { Nickname = "Rex", Age = 3, Gender = "Male", Energy = 90, Price = 75.0 }, "Dog");
+        petShop.AddPet(new Pet { Nickname = "Tweety", Age = 1, Gender = "Female", Energy = 70, Price = 30.0 }, "Bird");
+        petShop.AddPet(new Pet { Nickname = "Nemo", Age = 1, Gender = "Male", Energy = 60, Price = 20.0 }, "Fish");
+
+        Console.WriteLine("Pets in the Pet Shop:");
+
+        petShop.DisplayPets();
+    }
+}
